@@ -136,8 +136,11 @@ MonoBehaviour:
   myRB: {fileID: 0}
   initialPosition: {x: 0, y: 0, z: 0}
   grabDetection: {fileID: 0}
+  beenGrabbed: 0
   isReady2PickUp: 0
   readyFrames: 0
+  parentDebug: {fileID: 0}
+  debug: {fileID: 0}
 --- !u!114 &5124529692408496184
 MonoBehaviour:
   m_ObjectHideFlags: 0

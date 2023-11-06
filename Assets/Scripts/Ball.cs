@@ -63,4 +63,9 @@ public class Ball : MonoBehaviour
         stillFrames = 0;
         this.transform.position = resetPoint.portalPoint.position;
     }
+
+    public void Despawn()
+    {
+        Destroy(this.gameObject);
+    }
 }
