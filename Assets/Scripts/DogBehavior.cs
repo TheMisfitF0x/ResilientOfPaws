@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using AggregatGames.AI.Pathfinding;
+using Aoiti.Pathfinding;
 
 public class DogBehavior : MonoBehaviour
 {   //Array of all balls in ready2PickUp State
@@ -16,19 +16,19 @@ public class DogBehavior : MonoBehaviour
     public Portal destPortal;
     public float retrieveSpeed;
     public float rotationSpeed;
-    public Pathfinder pathfinder;
     public float reachedKnot = 1f;
-    private List<PathKnot> knots = new List<PathKnot>();
     public int state = -1;
     public int knotIndex = 1;
 
-    private Path path;
-
     bool hasBall = false;
+
+    Pathfinder<Vector3> pathfinder;
+    List<Vector3> path;
+    int curNode = 0;
     // Start is called before the first frame update
     void Start()
     {
-
+        pathfinder = new Pathfinder<Vector3>(GetDistance, GetNeighbourNodes, 100);
         balls = GameObject.FindObjectsOfType<Ball>();
         targetBall = balls[0];
     }
@@ -37,7 +37,7 @@ public class DogBehavior : MonoBehaviour
     void FixedUpdate()
     {
 
-        Debug.Log(this.transform.parent);
+        
         if (targetBall == null)
         {
             balls = GameObject.FindObjectsOfType<Ball>();
@@ -46,6 +46,7 @@ public class DogBehavior : MonoBehaviour
                 if (ball.isReady2PickUp && ball.readyFrames > targetBall.readyFrames)
                 {
                     targetBall = ball;
+                    if (pathfinder.GenerateAstarPath(transform.position, ball.transform.position, out path)) ;
                 }
             }
         }
@@ -61,10 +62,17 @@ public class DogBehavior : MonoBehaviour
                 hasBall = true;
                 targetBall.myRB.useGravity = false;
                 targetBall.isReady2PickUp = false;
+                if (pathfinder.GenerateAstarPath(transform.position, destPortal.transform.position, out path)) ;
+                curNode = 0;
+                
             }
             else
             {
-                PathFinderMethod(targetBall.transform);
+                this.transform.position = Vector3.MoveTowards(transform.position, path[curNode], retrieveSpeed);
+                if (transform.position == path[curNode])
+                {
+                    curNode++;
+                }
                 //Play running animation
             }
         }
@@ -77,84 +85,56 @@ public class DogBehavior : MonoBehaviour
                 destPortal.heldBall = targetBall;
                 //Play pickup animation.
                 hasBall = false;
+                curNode = 0;
             }
             else
             {
-                PathFinderMethod(destPortal.transform);
+                transform.position = Vector3.MoveTowards(transform.position, path[curNode], retrieveSpeed);
+                if(transform.position == path[curNode])
+                {
+                    curNode++;
+                }
                 //Play running animation
             }
         }
     }
 
-    void PathFinderMethod(Transform target)
+    float GetDistance(Vector3 A, Vector3 B)
     {
-        if (knots.Count == 0 && state != -2 || target.position != pathfinder.target)
-        {
-            if (knots.Count == 0) pathfinder.findPath(transform.position, target.position, foundPath);
-            else pathfinder.findPath(knots[knotIndex].position, target.position, foundPath);
-        }
-        if (knots.Count != 0 && knotIndex < knots.Count)
-        {
-            Vector3 lookPos = knots[knotIndex].position - transform.position;
-            lookPos.y = 0;
-            Quaternion rotation = Quaternion.LookRotation(lookPos);
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * rotationSpeed);
-
-            Vector3 walkdir = transform.root.forward;
-            walkdir.y = (knots[knotIndex].position - transform.position).y;
-
-            if (knotIndex + 1 >= knots.Count)
-            {
-                return;
-            }
-
-            if (path.blockedByDynamicObstacle(knots[knotIndex], knots[knotIndex + 1]))
-            {
-                return;
-            }
-
-            if (Vector3.Distance(transform.position, knots[knotIndex].position) <= reachedKnot)
-            {
-                RaycastHit hit;
-                bool isHitting = Physics.Raycast(transform.position, (knots[knotIndex].position - transform.position).normalized, out hit, Vector3.Distance(transform.position, knots[knotIndex].position));
-                if (isHitting && hit.collider.gameObject.tag != pathfinder.obstacleTag)
-                {
-                    Obstacle obstacle = hit.collider.gameObject.GetComponent<Obstacle>();
-                    if (obstacle == null)
-                    {
-                        if (knotIndex < knots.Count - 1) knotIndex++;
-                    }
-                    else if (!obstacle.isObstacle(pathfinder)) if (knotIndex < knots.Count - 1) knotIndex++;
-                }
-                else if (!isHitting)
-                {
-                    if (knotIndex < knots.Count - 1) knotIndex++;
-                    else knots = new List<PathKnot>();//DONE
-                }
-            }
-        }
+        return (A - B).sqrMagnitude; 
     }
 
-    public void foundPath(Pathinfo info)
+    Dictionary<Vector3, float> GetNeighbourNodes(Vector3 pos)
     {
-        if (info.foundPath)
+        Dictionary<Vector3, float> neighbours = new Dictionary<Vector3, float>();
+        for (int i = -1; i < 2; i++)
         {
-            path = info.path;
-            if (knots.Count == 0)
+            for (int j = -1; j < 2; j++)
             {
-                knotIndex = 1;
-                knots = info.path.getPathList();
+                for (int k=-1;k<2;k++)
+                {
+
+                        if (i == 0 && j == 0 && k==0) continue;
+
+                        Vector3 dir = new Vector3(i, j,k);
+                        if (!Physics2D.Linecast(pos, pos + dir))
+                        {
+                            neighbours.Add(pos + dir, dir.magnitude);
+                        }
+                    }
+                }
+
             }
-            else
-            {
-                knots.RemoveRange(knotIndex, knots.Count - knotIndex);
-                knots.AddRange(info.path.getPathList());
-            }
-        }
-        else
-        {
-            Debug.Log(info.comment);
-            state = -2;
-        }
+            return neighbours;
+    }
+
+    void PathFinderMethod(Transform target)
+    {
+        
+    }
+
+    public void foundPath()
+    {
+
     }
 }
