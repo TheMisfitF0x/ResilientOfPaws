@@ -28,6 +28,7 @@ public class DogBehavior : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         balls = GameObject.FindObjectsOfType<Ball>();
+        Debug.Log(balls.Length);
         targetBall = balls[0];
         //pathfinder = new Pathfinder<Vector3>(GetDistance, GetNeighbourNodes, 100);
     }
@@ -62,7 +63,6 @@ public class DogBehavior : MonoBehaviour
                 targetBall.myRB.useGravity = false;
                 targetBall.isReady2PickUp = false;
                 
-                
             }
             else
             {
@@ -88,38 +88,9 @@ public class DogBehavior : MonoBehaviour
         }
     }
 
-    Dictionary<Vector3, float> GetNeighbourNodes(Vector3 pos)
-    {
-        Dictionary<Vector3, float> neighbours = new Dictionary<Vector3, float>();
-        for (int i = -1; i < 2; i++)
-        {
-            for (int j = -1; j < 2; j++)
-            {
-                for (int k=-1;k<2;k++)
-                {
-
-                        if (i == 0 && j == 0 && k==0) continue;
-
-                        Vector3 dir = new Vector3(i, j,k);
-                        if (!Physics2D.Linecast(pos, pos + dir))
-                        {
-                            neighbours.Add(pos + dir, dir.magnitude);
-                        }
-                    }
-                }
-
-            }
-            return neighbours;
-    }
-
     bool PathFind(Transform target)
     {
         
         return true;
-    }
-  
-    public void foundPath()
-    {
-
     }
 }

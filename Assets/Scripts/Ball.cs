@@ -7,7 +7,7 @@ public class Ball : MonoBehaviour
 {
     //delay in seconds before a ball is teleported back when still.
     const int stillTimer = 500;
-
+    public Material myMat;
     public Rigidbody myRB;
     public Vector3 initialPosition;
     public ActiveStateGroup grabDetection;
@@ -16,13 +16,14 @@ public class Ball : MonoBehaviour
     public bool isReady2PickUp = false;
     public int readyFrames;
 
-    int stillFrames = 0;
+    protected int stillFrames = 0;
 
     public Transform parentDebug;
     public Light debug;
     // Start is called before the first frame update
     void Start()
     {
+        
         myRB = this.gameObject.GetComponent<Rigidbody>();
         initialPosition = this.transform.position;
         grabDetection = this.gameObject.GetComponent<ActiveStateGroup>();

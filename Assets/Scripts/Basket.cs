@@ -7,6 +7,7 @@ public class Basket : MonoBehaviour
 {
     public TMP_Text scoreText;
     int curScore = 0;
+    public Portal returnPortal;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,9 +24,13 @@ public class Basket : MonoBehaviour
     {
         if(other.CompareTag("Ball"))
         {
-            other.GetComponent<Ball>().Despawn();
+            other.GetComponent<Ball>().Reset(returnPortal);
             curScore++;
             scoreText.text = curScore.ToString();
+        }
+        else if(other.CompareTag("Treat"))
+        {
+            other.GetComponent<Treat>().Reset();
         }
     }
 }
