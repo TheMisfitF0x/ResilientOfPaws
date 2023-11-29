@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ab1469870b4e854ba5e7313227e99e3, type: 3}
+  m_Name: PathCharacterSetting
+  m_EditorClassIdentifier: 
+  nodeHorizontalSize: 1.5
+  nodeVerticalSize: 3
+  percentageSizeHorizontalCheckForGroundCenter: 1
+  maxHorizontalMapNodeArrayLength: 20
+  maxVerticalMapNodeArrayLength: 5
+  bonusHorizontalMapArrayExtends: 2
+  bonusVerticalMapArrayExtends: 1
+  distanceToCheckBetweenPositionAndNextNode: 0.1
+  delayCheckingNodePathState: 0.5
+  maxCaseDistanceToCheck: 10
+  characterCanUseDiagonalMove: 1
+  characterCabUseVerticalPath: 1
+  characterCanFly: 0
+  characterCanFall: 1
+  axeToUse: 0
+  pathNodeDirectionType: 1
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 1032
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 2112
+  maxAngleAvailableToWalkUp: 42.6
+  maxAngleAvailableToWalkDown: 43.2
+  maxVerticalDistancePlayerCanAutoClimb: 0.25
+  presiceVerticalDetectionBetweenTwoCase: 11
+  maVerticalCaseCharacterCanFall: 10

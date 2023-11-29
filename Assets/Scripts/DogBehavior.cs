@@ -1,14 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Aoiti.Pathfinding;
+using UnityEngine.AI;
 
 public class DogBehavior : MonoBehaviour
 {   //Array of all balls in ready2PickUp State
     Ball[] balls;
 
     //Ball Dog has targeted
-    Ball targetBall;
+    public Ball targetBall;
 
     //Transform to attach ball to.
     public Transform lowerJawSpot;
@@ -20,38 +20,37 @@ public class DogBehavior : MonoBehaviour
     public int state = -1;
     public int knotIndex = 1;
 
-    bool hasBall = false;
 
-    Pathfinder<Vector3> pathfinder;
-    List<Vector3> path;
-    int curNode = 0;
+    bool hasBall = false;
+    NavMeshAgent agent;
     // Start is called before the first frame update
     void Start()
     {
-        pathfinder = new Pathfinder<Vector3>(GetDistance, GetNeighbourNodes, 100);
+        agent = GetComponent<NavMeshAgent>();
         balls = GameObject.FindObjectsOfType<Ball>();
         targetBall = balls[0];
+        //pathfinder = new Pathfinder<Vector3>(GetDistance, GetNeighbourNodes, 100);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-
-        
         if (targetBall == null)
         {
             balls = GameObject.FindObjectsOfType<Ball>();
             foreach (Ball ball in balls)
             {
+                Debug.Log(ball);
+                Debug.Log(PathFind(ball.transform));
                 if (ball.isReady2PickUp && ball.readyFrames > targetBall.readyFrames)
                 {
                     targetBall = ball;
-                    if (pathfinder.GenerateAstarPath(transform.position, ball.transform.position, out path)) ;
+                    agent.destination = ball.transform.position;
                 }
             }
         }
 
-        if (targetBall.readyFrames > 500 && targetBall.isReady2PickUp)
+        if (targetBall != null && targetBall.readyFrames > 250 && targetBall.isReady2PickUp)
         {
 
             if (Vector3.Distance(this.transform.position, targetBall.transform.position) < .2f)
@@ -62,17 +61,12 @@ public class DogBehavior : MonoBehaviour
                 hasBall = true;
                 targetBall.myRB.useGravity = false;
                 targetBall.isReady2PickUp = false;
-                if (pathfinder.GenerateAstarPath(transform.position, destPortal.transform.position, out path)) ;
-                curNode = 0;
+                
                 
             }
             else
             {
-                this.transform.position = Vector3.MoveTowards(transform.position, path[curNode], retrieveSpeed);
-                if (transform.position == path[curNode])
-                {
-                    curNode++;
-                }
+                agent.destination = targetBall.transform.position;
                 //Play running animation
             }
         }
@@ -85,23 +79,13 @@ public class DogBehavior : MonoBehaviour
                 destPortal.heldBall = targetBall;
                 //Play pickup animation.
                 hasBall = false;
-                curNode = 0;
             }
             else
             {
-                transform.position = Vector3.MoveTowards(transform.position, path[curNode], retrieveSpeed);
-                if(transform.position == path[curNode])
-                {
-                    curNode++;
-                }
+                agent.destination = destPortal.transform.position;
                 //Play running animation
             }
         }
-    }
-
-    float GetDistance(Vector3 A, Vector3 B)
-    {
-        return (A - B).sqrMagnitude; 
     }
 
     Dictionary<Vector3, float> GetNeighbourNodes(Vector3 pos)
@@ -128,11 +112,12 @@ public class DogBehavior : MonoBehaviour
             return neighbours;
     }
 
-    void PathFinderMethod(Transform target)
+    bool PathFind(Transform target)
     {
         
+        return true;
     }
-
+  
     public void foundPath()
     {
 
