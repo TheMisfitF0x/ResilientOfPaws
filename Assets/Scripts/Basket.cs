@@ -24,12 +24,15 @@ public class Basket : MonoBehaviour
     {
         if(other.CompareTag("Ball"))
         {
-            other.GetComponent<Ball>().Reset(returnPortal);
+            other.GetComponent<Ball>().fading = true;
+            other.GetComponent<Ball>().fadingOut = true;
             curScore++;
             scoreText.text = curScore.ToString();
         }
         else if(other.CompareTag("Treat"))
         {
+            other.GetComponent<Treat>().fading = true;
+            other.GetComponent<Treat>().fadingOut = true;
             other.GetComponent<Treat>().Reset();
         }
     }

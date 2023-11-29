@@ -6,7 +6,7 @@ using Oculus.Interaction;
 public class Ball : MonoBehaviour
 {
     //delay in seconds before a ball is teleported back when still.
-    const int stillTimer = 500;
+    const int stillTimer = 250;
     public Material myMat;
     public Rigidbody myRB;
     public Vector3 initialPosition;
@@ -14,6 +14,8 @@ public class Ball : MonoBehaviour
 
     public bool beenGrabbed = false;
     public bool isReady2PickUp = false;
+    public bool fading = false;
+    public bool fadingOut = false;
     public int readyFrames;
 
     protected int stillFrames = 0;
@@ -34,7 +36,13 @@ public class Ball : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(grabDetection.Active && !beenGrabbed)
+        if (fading && beScored() == true)
+        {
+            fading = false;
+            fadingOut = false;
+        }
+
+        if (grabDetection.Active && !beenGrabbed && Vector3.Distance(this.transform.position, initialPosition) > 1)
         {
             myRB.useGravity = true;
             beenGrabbed = true;
@@ -56,15 +64,54 @@ public class Ball : MonoBehaviour
     }
 
     //Called when ball travels through portals, or falls out of bounds.
-    public void Reset(Portal resetPoint)
+    public void Reset()
     {
         myRB.useGravity = false;
         beenGrabbed = false;
         readyFrames = 0;
         stillFrames = 0;
-        this.transform.position = resetPoint.portalPoint.position;
+        this.transform.position = initialPosition;
     }
 
+    bool beScored()
+    {
+        if(fadingOut)
+        {
+            fadeOut();
+            return false;
+        }
+        else
+        {
+            return fadeIn();
+        }
+    }
+
+    void fadeOut()
+    {
+        float transparency = myMat.color.a;
+        transparency -= .01f;
+        myMat.color = new Vector4(myMat.color.r, myMat.color.g, myMat.color.b, transparency);
+        if(transparency <=0)
+        {
+            Reset();
+            fadingOut = false;
+        }
+    }
+
+    bool fadeIn()
+    {
+        float transparency = myMat.color.a;
+        transparency += .01f;
+        myMat.color = new Vector4(myMat.color.r, myMat.color.g, myMat.color.b, transparency);
+        if(transparency >= 1)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public void Despawn()
     {
         Destroy(this.gameObject);

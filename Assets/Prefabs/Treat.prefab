@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 8523702483754206408}
   - component: {fileID: 8523702483754206415}
   - component: {fileID: 8523702483754206414}
-  - component: {fileID: 8523702483754206413}
+  - component: {fileID: 8481829564870271050}
   m_Layer: 0
   m_Name: Treat
   m_TagString: Treat
@@ -223,7 +223,7 @@ MonoBehaviour:
   - {fileID: 8523702483754206408}
   - {fileID: 8523702483754206415}
   _logicOperator: 0
---- !u!114 &8523702483754206413
+--- !u!114 &8481829564870271050
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -232,15 +232,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 8830204195774003607}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78000ab6e2200724289fbe3d10c92e15, type: 3}
+  m_Script: {fileID: 11500000, guid: e92d06a53860af247a86a99f25769935, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   myMat: {fileID: -7174953508954654462, guid: 45596d8131725e448b96615513fa9500, type: 3}
   myRB: {fileID: 8523702483754206409}
   initialPosition: {x: 0, y: 0, z: 0}
-  grabDetection: {fileID: 8523702483754206414}
+  grabDetection: {fileID: 0}
   beenGrabbed: 0
   isReady2PickUp: 0
+  fading: 0
+  fadingOut: 0
   readyFrames: 0
   parentDebug: {fileID: 0}
   debug: {fileID: 0}

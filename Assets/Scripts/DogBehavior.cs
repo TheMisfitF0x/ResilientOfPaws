@@ -28,8 +28,6 @@ public class DogBehavior : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         balls = GameObject.FindObjectsOfType<Ball>();
-        Debug.Log(balls.Length);
-        targetBall = balls[0];
         //pathfinder = new Pathfinder<Vector3>(GetDistance, GetNeighbourNodes, 100);
     }
 
@@ -43,7 +41,7 @@ public class DogBehavior : MonoBehaviour
             {
                 Debug.Log(ball);
                 Debug.Log(PathFind(ball.transform));
-                if (ball.isReady2PickUp && ball.readyFrames > targetBall.readyFrames)
+                if (ball.isReady2PickUp)
                 {
                     targetBall = ball;
                     agent.destination = ball.transform.position;
@@ -56,13 +54,22 @@ public class DogBehavior : MonoBehaviour
 
             if (Vector3.Distance(this.transform.position, targetBall.transform.position) < .2f)
             {
-                targetBall.transform.position = lowerJawSpot.transform.position;
-                targetBall.transform.SetParent(lowerJawSpot);
-                //Play pickup animation.
-                hasBall = true;
+                
+                //Play pickup/eat animation.
+
                 targetBall.myRB.useGravity = false;
                 targetBall.isReady2PickUp = false;
-                
+                if (targetBall.CompareTag("Treat"))
+                {
+                    targetBall.Reset();
+                    //Whatever else the dog or the score does when we feed him.
+                }
+                else if (targetBall.CompareTag("Ball"))
+                {
+                    targetBall.transform.position = lowerJawSpot.transform.position;
+                    targetBall.transform.SetParent(lowerJawSpot);
+                    hasBall = true;
+                }
             }
             else
             {
@@ -79,6 +86,7 @@ public class DogBehavior : MonoBehaviour
                 destPortal.heldBall = targetBall;
                 //Play pickup animation.
                 hasBall = false;
+                targetBall = null;
             }
             else
             {

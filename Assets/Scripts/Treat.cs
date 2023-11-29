@@ -6,14 +6,4 @@ public class Treat : Ball
 {
     
     
-
-    public void Reset()
-    {
-        
-        myRB.useGravity = false;
-        beenGrabbed = false;
-        readyFrames = 0;
-        stillFrames = 0;
-        this.transform.position = initialPosition;
-    }
 }

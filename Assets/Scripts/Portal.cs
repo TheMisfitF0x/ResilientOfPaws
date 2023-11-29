@@ -25,7 +25,8 @@ public class Portal : MonoBehaviour
             waitFrames++;
             if(waitFrames == waitTimer)
             {
-                heldBall.Reset(linkedPortal);
+                heldBall.fading = true;
+                heldBall.fadingOut = true;
                 heldBall = null;
                 waitFrames = 0;
             }
