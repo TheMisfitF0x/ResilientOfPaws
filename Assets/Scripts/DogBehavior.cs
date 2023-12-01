@@ -20,6 +20,8 @@ public class DogBehavior : MonoBehaviour
     public int state = -1;
     public int knotIndex = 1;
 
+    private Animator animator;
+
 
     bool hasBall = false;
     NavMeshAgent agent;
@@ -29,6 +31,8 @@ public class DogBehavior : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         balls = GameObject.FindObjectsOfType<Ball>();
         //pathfinder = new Pathfinder<Vector3>(GetDistance, GetNeighbourNodes, 100);
+
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -45,6 +49,7 @@ public class DogBehavior : MonoBehaviour
                 {
                     targetBall = ball;
                     agent.destination = ball.transform.position;
+                    animator.SetTrigger("Ismove");
                 }
             }
         }
@@ -54,8 +59,9 @@ public class DogBehavior : MonoBehaviour
 
             if (Vector3.Distance(this.transform.position, targetBall.transform.position) < .2f)
             {
-                
+
                 //Play pickup/eat animation.
+                animator.SetTrigger("PickupReady");
 
                 targetBall.myRB.useGravity = false;
                 targetBall.isReady2PickUp = false;
@@ -66,15 +72,22 @@ public class DogBehavior : MonoBehaviour
                 }
                 else if (targetBall.CompareTag("Ball"))
                 {
-                    targetBall.transform.position = lowerJawSpot.transform.position;
-                    targetBall.transform.SetParent(lowerJawSpot);
-                    hasBall = true;
+                    StartCoroutine(PickupWait());
+                    IEnumerator PickupWait()
+                    {
+                        yield return new WaitForSeconds(3);
+                        targetBall.transform.position = lowerJawSpot.transform.position;
+                        targetBall.transform.SetParent(lowerJawSpot);
+                        hasBall = true;
+                    }
+                    
                 }
             }
             else
-            {
-                agent.destination = targetBall.transform.position;
+            {                
                 //Play running animation
+                animator.SetTrigger("Ismove");
+                agent.destination = targetBall.transform.position;
             }
         }
         else if (hasBall)
@@ -85,13 +98,17 @@ public class DogBehavior : MonoBehaviour
                 targetBall.transform.SetParent(null);
                 destPortal.heldBall = targetBall;
                 //Play pickup animation.
+                animator.SetTrigger("PickupReady");
                 hasBall = false;
                 targetBall = null;
+                animator.ResetTrigger("Ismove");
+                animator.SetTrigger("GoToIdle");
             }
             else
             {
-                agent.destination = destPortal.transform.position;
                 //Play running animation
+                animator.SetTrigger("Ismove");
+                agent.destination = destPortal.transform.position;
             }
         }
     }
