@@ -32,7 +32,18 @@ public class DogBehavior : MonoBehaviour
         balls = GameObject.FindObjectsOfType<Ball>();
         //pathfinder = new Pathfinder<Vector3>(GetDistance, GetNeighbourNodes, 100);
 
-        animator = GetComponent<Animator>();
+        StartCoroutine(RandomIdle());
+        IEnumerator RandomIdle()
+        {
+            animator = GetComponent<Animator>();
+            while (true)
+            {
+                yield return new WaitForSeconds(8);
+
+                animator.SetInteger("IdleIndex", Random.Range(0, 3));
+                animator.SetTrigger("Idle");
+            }
+        }
     }
 
     // Update is called once per frame
@@ -68,10 +79,13 @@ public class DogBehavior : MonoBehaviour
                 if (targetBall.CompareTag("Treat"))
                 {
                     targetBall.Reset();
-                    //Whatever else the dog or the score does when we feed him.
+
+                    //Trigger celebration animation when Dog picks up the treat
+                    animator.SetTrigger("GaveTreat");
                 }
                 else if (targetBall.CompareTag("Ball"))
                 {
+                    //Wait for animation to finish before proceeding
                     StartCoroutine(PickupWait());
                     IEnumerator PickupWait()
                     {
@@ -79,6 +93,7 @@ public class DogBehavior : MonoBehaviour
                         targetBall.transform.position = lowerJawSpot.transform.position;
                         targetBall.transform.SetParent(lowerJawSpot);
                         hasBall = true;
+                        yield break;
                     }
                     
                 }
