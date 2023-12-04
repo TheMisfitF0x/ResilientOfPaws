@@ -33,7 +33,6 @@ public class Basket : MonoBehaviour
         {
             other.GetComponent<Treat>().fading = true;
             other.GetComponent<Treat>().fadingOut = true;
-            other.GetComponent<Treat>().Reset();
         }
     }
 }

@@ -42,7 +42,7 @@ public class Ball : MonoBehaviour
             fadingOut = false;
         }
 
-        if (grabDetection.Active && !beenGrabbed && Vector3.Distance(this.transform.position, initialPosition) > 1)
+        if (grabDetection.Active && !beenGrabbed && Vector3.Distance(this.transform.position, initialPosition) > 3)
         {
             myRB.useGravity = true;
             beenGrabbed = true;
@@ -66,11 +66,11 @@ public class Ball : MonoBehaviour
     //Called when ball travels through portals, or falls out of bounds.
     public void Reset()
     {
-        myRB.useGravity = false;
         beenGrabbed = false;
         readyFrames = 0;
         stillFrames = 0;
         this.transform.position = initialPosition;
+        myRB.useGravity = false;
     }
 
     bool beScored()

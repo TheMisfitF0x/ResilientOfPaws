@@ -68,20 +68,21 @@ public class DogBehavior : MonoBehaviour
         if (targetBall != null && targetBall.readyFrames > 250 && targetBall.isReady2PickUp)
         {
 
-            if (Vector3.Distance(this.transform.position, targetBall.transform.position) < .2f)
+            if (Vector3.Distance(this.transform.position, targetBall.transform.position) < .7f)
             {
-
+                agent.destination = this.transform.position;
                 //Play pickup/eat animation.
                 animator.SetTrigger("PickupReady");
 
                 targetBall.myRB.useGravity = false;
                 targetBall.isReady2PickUp = false;
                 if (targetBall.CompareTag("Treat"))
-                {
-                    targetBall.Reset();
-
+                { 
                     //Trigger celebration animation when Dog picks up the treat
                     animator.SetTrigger("GaveTreat");
+                    targetBall.fading = true;
+                    targetBall.fadingOut = true;
+                    targetBall = null;
                 }
                 else if (targetBall.CompareTag("Ball"))
                 {
@@ -107,8 +108,9 @@ public class DogBehavior : MonoBehaviour
         }
         else if (hasBall)
         {
-            if (Vector3.Distance(this.transform.position, destPortal.transform.position) < .5f)
+            if (Vector3.Distance(this.transform.position, destPortal.transform.position) < .7f)
             {
+                agent.destination = this.transform.position;
                 targetBall.transform.position = destPortal.portalPoint.position;
                 targetBall.transform.SetParent(null);
                 destPortal.heldBall = targetBall;
