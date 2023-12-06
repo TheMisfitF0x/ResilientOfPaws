@@ -130,9 +130,18 @@ public class DogBehavior : MonoBehaviour
         }
     }
 
-    bool PathFind(Transform target)
+    public void thumbsUpCommand()
     {
-        
-        return true;
+        Debug.Log("Thumbs up recognized");
+    }
+
+    public void stayCommand()
+    {
+        Debug.Log("Stay Recognized");
+    }
+
+    public void comeHereCommand()
+    {
+        Debug.Log("Come Here recognized.");
     }
 }
