@@ -135,6 +135,7 @@ public class DogBehavior : MonoBehaviour
         if(targetBall != null)
         {
             //Insert Animation trigger here.
+            animator.SetTrigger("playerThumbsUp");
         }
         Debug.Log("Thumbs up recognized");
     }
