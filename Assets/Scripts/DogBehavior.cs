@@ -132,7 +132,7 @@ public class DogBehavior : MonoBehaviour
     public void thumbsUpCommand()
     {
         //The dog will only execute this if it is not actively tracking a throwable
-        if(targetBall != null)
+        if(targetBall == null)
         {
             //Insert Animation trigger here.
             animator.SetTrigger("playerThumbsUp");
@@ -143,11 +143,14 @@ public class DogBehavior : MonoBehaviour
     public void stayCommand()
     {
         Debug.Log("Stay Recognized");
+        animator.SetTrigger("GoToIdle");
+        //Stops the dog for as long as the pose is held, even if chasing a throwable.
+        agent.destination = this.transform.position;
     }
 
-    public void comeHereCommand(string test)
+    public void comeHereCommand()
     {
-        if (targetBall != null)
+        if (targetBall == null)
         {
             agent.destination = GameObject.FindGameObjectsWithTag("Player")[0].transform.position;
             if (Vector3.Distance(this.transform.position, agent.destination) < 3)

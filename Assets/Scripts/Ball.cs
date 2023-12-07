@@ -42,7 +42,7 @@ public class Ball : MonoBehaviour
             fadingOut = false;
         }
 
-        if (grabDetection.Active && !beenGrabbed && Vector3.Distance(this.transform.position, initialPosition) > 3)
+        if (grabDetection.Active && !beenGrabbed && Vector3.Distance(this.transform.position, initialPosition) > 1)
         {
             myRB.useGravity = true;
             beenGrabbed = true;
