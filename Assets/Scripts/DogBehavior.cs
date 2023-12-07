@@ -55,7 +55,6 @@ public class DogBehavior : MonoBehaviour
             foreach (Ball ball in balls)
             {
                 Debug.Log(ball);
-                Debug.Log(PathFind(ball.transform));
                 if (ball.isReady2PickUp)
                 {
                     targetBall = ball;
@@ -132,6 +131,11 @@ public class DogBehavior : MonoBehaviour
 
     public void thumbsUpCommand()
     {
+        //The dog will only execute this if it is not actively tracking a throwable
+        if(targetBall != null)
+        {
+            //Insert Animation trigger here.
+        }
         Debug.Log("Thumbs up recognized");
     }
 
@@ -140,8 +144,16 @@ public class DogBehavior : MonoBehaviour
         Debug.Log("Stay Recognized");
     }
 
-    public void comeHereCommand()
+    public void comeHereCommand(string test)
     {
+        if (targetBall != null)
+        {
+            agent.destination = GameObject.FindGameObjectsWithTag("Player")[0].transform.position;
+            if (Vector3.Distance(this.transform.position, agent.destination) < 3)
+            {
+                agent.destination = this.transform.position;
+            }
+        }
         Debug.Log("Come Here recognized.");
     }
 }
